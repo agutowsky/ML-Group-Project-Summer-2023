@@ -48,7 +48,7 @@ def model_builder(hp):
         learning_rate=eta,
         momentum=alpha,
         nesterov=False,
-        weight_decay=None,
+        #weight_decay=None,
         clipnorm=None,
         clipvalue=None,
         global_clipnorm=None,
@@ -74,8 +74,7 @@ def model_builder(hp):
     )
 
     # Get activation from config
-    # activation = hp.Choice("activation", values=["relu", "sigmoid", "tanh", "selu", "elu"])
-    activation = hp.Choice("activation", values=["relu", "sigmoid", "tanh"])
+    activation = hp.Choice("activation", values=["relu", "sigmoid", "tanh", "selu", "elu"])
 
     # Generating the hidden layers
     for _ in range(0, hl_units, 1):
@@ -170,7 +169,7 @@ def main():
     )
 
     # Get the optimal hyperparameters
-    best_hps = tuner.get_best_hyperparameters(num_trials=10)[0]
+    best_hps = tuner.get_best_hyperparameters(num_trials=1)[0]
 
     # Build the model with the optimal hyperparameters and train it on the data for 50 epochs
     # ERROR occurs in this code below:

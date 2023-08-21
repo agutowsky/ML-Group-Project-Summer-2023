@@ -10,10 +10,10 @@
 #  Note: It is recommended to install packages within a virtual environment to avoid conflicts with other project dependencies.
 #  Read more here: https://code.visualstudio.com/docs/python/environments
 
-matplotlib>=3.7.2
-numpy>=1.24.1
-pandas>=2.0.3
-pyyaml>=6.0
-scikit-learn>=1.3.0
-tensorflow>=2.13.0
-keras_tuner>=1.3.5
+#scikit-learn>=1.3.0 <- Version 0.24.2 already installed in paperspace box
+#tensorflow>=2.13.0 <- Version 2.5.0 already installed in paperspace box
+matplotlib>=3.5.3	# Version which works in paperspace box
+numpy>=1.23.2		# Version which works in paperspace box
+pandas>=1.4.4		# Version which works in paperspace box
+pyyaml>=5.4.1		# Version which works in paperspace box
+keras_tuner>=1.3.5	# Version which works in paperspace box
