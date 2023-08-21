@@ -169,7 +169,7 @@ def main():
     )
 
     # Get the optimal hyperparameters
-    best_hps = tuner.get_best_hyperparameters(num_trials=1)[0]
+    best_hps = tuner.get_best_hyperparameters(num_trials=10)[0]
 
     # Build the model with the optimal hyperparameters and train it on the data for 50 epochs
     # ERROR occurs in this code below:
