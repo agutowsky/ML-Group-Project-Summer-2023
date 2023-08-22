@@ -74,8 +74,7 @@ def model_builder(hp):
     )
 
     # Get activation from config
-    # activation = hp.Choice("activation", values=["relu", "sigmoid", "tanh", "selu", "elu"])
-    activation = hp.Choice("activation", values=["relu", "sigmoid", "tanh"])
+    activation = hp.Choice("activation", values=["relu", "sigmoid", "tanh", "selu", "elu"])
 
     # Generating the hidden layers
     for _ in range(0, hl_units, 1):
@@ -162,7 +161,7 @@ def main():
     tuner.search(
         X_train_scaled,
         Y_train_onehot,
-        epochs=config["params"]["epochs"],
+        epochs=12,
         batch_size=config["params"]["batch_size"],
         validation_data=(X_test_scaled, Y_test_onehot),
         verbose=1,
