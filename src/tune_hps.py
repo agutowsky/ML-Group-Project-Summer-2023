@@ -152,7 +152,7 @@ def main():
     tuner = kt.Hyperband(
         model_builder,
         objective="val_accuracy",
-        max_epochs=25,
+        max_epochs=12,
     )
 
     # Define early stopping callback based on validation loss
@@ -170,7 +170,7 @@ def main():
     )
 
     # Get the optimal hyperparameters
-    best_hps = tuner.get_best_hyperparameters(num_trials=10)[0]
+    best_hps = tuner.get_best_hyperparameters(num_trials=25)[0]
 
     # Build the model with the optimal hyperparameters and train it on the data for 50 epochs
     # ERROR occurs in this code below:
@@ -184,7 +184,12 @@ def main():
     hypermodel = tuner.hypermodel.build(best_hps)
     # Retrain the model
     history = hypermodel.fit(
-        X_train_scaled, Y_train_onehot, epochs=50
+        X_train_scaled,
+        Y_train_onehot,
+        epochs=50,
+        batch_size=config["params"]["batch_size"],
+        validation_data=(X_test_scaled, Y_test_onehot),
+        verbose=1,
     )
 
     # Now print the accuracy and loss on the test set
