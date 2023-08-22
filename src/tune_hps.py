@@ -101,12 +101,12 @@ def model_builder(hp):
 def main():
     # Use Intel extensions for scikit-learn
     patch_sklearn()
-    # Assume that the number of cores per socket in the machine is denoted as NUM_PARALLEL_EXEC_UNITS
-    # when NUM_PARALLEL_EXEC_UNITS=0 the system chooses appropriate settings
-    config = tf.ConfigProto(inter_op_parallelism_threads=0,
-                            allow_soft_placement=True,
-                            device_count = {'CPU': 0})
-    session = tf.Session(config=config)
+
+    # Tensorflow v2 enable multithreading
+    # https://www.intel.com/content/www/us/en/developer/articles/guide/guide-to-tensorflow-runtime-optimizations-for-cpu.html
+    tf.config.threading.set_inter_op_parallelism_threads()
+    tf.config.threading.set_intra_op_parallelism_threads()
+    tf.config.set_soft_device_placement(enabled)
 
     # Output classes
     num_classes = 2
