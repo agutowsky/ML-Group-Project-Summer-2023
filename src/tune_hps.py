@@ -28,6 +28,16 @@ def model_builder(hp):
         model (tf.keras.Sequential): The model to use in hyperparameter tuning.
     """
 
+    # Setup tensorflow for best performance
+    # Droplet is 96 GB Memory / 48 Intel vCPUs / 600 GB Disk / SFO3
+    config = tf.ConfigProto(
+        intra_op_parallelism_threads=NUM_PARALLEL_EXEC_UNITS,
+        inter_op_parallelism_threads=2,
+        allow_soft_placement=True,
+        device_count={"CPU": 48},
+    )
+    session = tf.Session(config=config)
+
     # Reading in configuration options
     try:
         config: dict = load_config(src="./config.yaml")
@@ -74,7 +84,9 @@ def model_builder(hp):
     )
 
     # Get activation from config
-    activation = hp.Choice("activation", values=["relu", "sigmoid", "tanh", "selu", "elu"])
+    activation = hp.Choice(
+        "activation", values=["relu", "sigmoid", "tanh", "selu", "elu"]
+    )
 
     # Generating the hidden layers
     for _ in range(0, hl_units, 1):
@@ -96,6 +108,17 @@ def model_builder(hp):
 
 
 def main():
+    # Setup tensorflow for best performance
+    # Droplet is 96 GB Memory / 48 Intel vCPUs / 600 GB Disk / SFO3
+    config = tf.ConfigProto(
+        intra_op_parallelism_threads=NUM_PARALLEL_EXEC_UNITS,
+        inter_op_parallelism_threads=2,
+        allow_soft_placement=True,
+        device_count={"CPU": 48},
+    )
+    session = tf.Session(config=config)
+
+    # Output classes
     num_classes = 2
 
     # Reading in configuration options
@@ -151,7 +174,7 @@ def main():
     tuner = kt.Hyperband(
         model_builder,
         objective="val_accuracy",
-        max_epochs=12,
+        max_epochs=25,
     )
 
     # Define early stopping callback based on validation loss
@@ -161,7 +184,7 @@ def main():
     tuner.search(
         X_train_scaled,
         Y_train_onehot,
-        epochs=12,
+        epochs=25,
         batch_size=config["params"]["batch_size"],
         validation_data=(X_test_scaled, Y_test_onehot),
         verbose=1,
@@ -192,13 +215,17 @@ def main():
     )
 
     # Now print the accuracy and loss on the test set
-    test_loss, test_accuracy = hypermodel.evaluate(X_test_scaled, Y_test_onehot, verbose=0)
+    test_loss, test_accuracy = hypermodel.evaluate(
+        X_test_scaled, Y_test_onehot, verbose=0
+    )
     print(f"Test Loss: {test_loss:.4f}")
     print(f"Test Accuracy: {test_accuracy:.4f}")
 
     # Make predictions on the test data
     Y_pred = hypermodel.predict(X_test_scaled)
-    Y_pred_classes = np.argmax(Y_pred, axis=1)  # Convert one-hot encoded predictions to classes
+    Y_pred_classes = np.argmax(
+        Y_pred, axis=1
+    )  # Convert one-hot encoded predictions to classes
 
     # Calculate and print classification report
     class_report = classification_report(Y_test, Y_pred_classes)
