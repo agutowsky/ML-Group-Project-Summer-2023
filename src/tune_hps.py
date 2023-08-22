@@ -7,6 +7,7 @@ import tensorflow as tf
 import keras_tuner as kt
 import pandas as pd
 import numpy as np
+from sklearnex import patch_sklearn
 from sklearn.discriminant_analysis import StandardScaler
 from sklearn.metrics import classification_report
 from utils.config import load_config, pretty_print_config
@@ -98,14 +99,13 @@ def model_builder(hp):
 
 
 def main():
-    # Setup tensorflow for best performance
-    # Droplet is 96 GB Memory / 48 Intel vCPUs / 600 GB Disk / SFO3
-    #Assume that the number of cores per socket in the machine is denoted as NUM_PARALLEL_EXEC_UNITS
-    #  when NUM_PARALLEL_EXEC_UNITS=0 the system chooses appropriate settings
-    config = tf.ConfigProto(intra_op_parallelism_threads=NUM_PARALLEL_EXEC_UNITS,
-                            inter_op_parallelism_threads=2,
+    # Use Intel extensions for scikit-learn
+    patch_sklearn()
+    # Assume that the number of cores per socket in the machine is denoted as NUM_PARALLEL_EXEC_UNITS
+    # when NUM_PARALLEL_EXEC_UNITS=0 the system chooses appropriate settings
+    config = tf.ConfigProto(inter_op_parallelism_threads=0,
                             allow_soft_placement=True,
-                            device_count = {'CPU': NUM_PARALLEL_EXEC_UNITS})
+                            device_count = {'CPU': 0})
     session = tf.Session(config=config)
 
     # Output classes

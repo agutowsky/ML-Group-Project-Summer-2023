@@ -4,6 +4,7 @@ CS 445/545 | Portland State University | ML Group Assignment Summer 2023
 """
 
 import argparse
+from sklearnex import patch_sklearn
 from sklearn.discriminant_analysis import StandardScaler
 from sklearn.metrics import classification_report
 import tensorflow as tf
@@ -16,6 +17,15 @@ from utils.preprocess import preprocess_csv, balance_dataset
 
 
 def main():
+    # Use Intel extensions for scikit-learn
+    patch_sklearn()
+    # Assume that the number of cores per socket in the machine is denoted as NUM_PARALLEL_EXEC_UNITS
+    # when NUM_PARALLEL_EXEC_UNITS=0 the system chooses appropriate settings
+    config = tf.ConfigProto(inter_op_parallelism_threads=0,
+                            allow_soft_placement=True,
+                            device_count = {'CPU': 0})
+    session = tf.Session(config=config)
+
     # Command line argument parser
     parser = argparse.ArgumentParser()
     parser.add_argument(
