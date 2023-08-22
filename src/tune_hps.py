@@ -28,16 +28,6 @@ def model_builder(hp):
         model (tf.keras.Sequential): The model to use in hyperparameter tuning.
     """
 
-    # Setup tensorflow for best performance
-    # Droplet is 96 GB Memory / 48 Intel vCPUs / 600 GB Disk / SFO3
-    config = tf.ConfigProto(
-        intra_op_parallelism_threads=NUM_PARALLEL_EXEC_UNITS,
-        inter_op_parallelism_threads=2,
-        allow_soft_placement=True,
-        device_count={"CPU": 48},
-    )
-    session = tf.Session(config=config)
-
     # Reading in configuration options
     try:
         config: dict = load_config(src="./config.yaml")
@@ -110,12 +100,12 @@ def model_builder(hp):
 def main():
     # Setup tensorflow for best performance
     # Droplet is 96 GB Memory / 48 Intel vCPUs / 600 GB Disk / SFO3
-    config = tf.ConfigProto(
-        intra_op_parallelism_threads=NUM_PARALLEL_EXEC_UNITS,
-        inter_op_parallelism_threads=2,
-        allow_soft_placement=True,
-        device_count={"CPU": 48},
-    )
+    #Assume that the number of cores per socket in the machine is denoted as NUM_PARALLEL_EXEC_UNITS
+    #  when NUM_PARALLEL_EXEC_UNITS=0 the system chooses appropriate settings
+    config = tf.ConfigProto(intra_op_parallelism_threads=NUM_PARALLEL_EXEC_UNITS,
+                            inter_op_parallelism_threads=2,
+                            allow_soft_placement=True,
+                            device_count = {'CPU': NUM_PARALLEL_EXEC_UNITS})
     session = tf.Session(config=config)
 
     # Output classes
