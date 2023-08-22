@@ -21,9 +21,10 @@ def main():
     patch_sklearn()
 
     # Tensorflow v2 enable multithreading
+    # droplet = 48 Intel vCPUs with 1 thread each
     # https://www.intel.com/content/www/us/en/developer/articles/guide/guide-to-tensorflow-runtime-optimizations-for-cpu.html
-    tf.config.threading.set_inter_op_parallelism_threads()
-    tf.config.threading.set_intra_op_parallelism_threads()
+    tf.config.threading.set_inter_op_parallelism_threads(48)
+    tf.config.threading.set_intra_op_parallelism_threads(48)
     tf.config.set_soft_device_placement(enabled)
 
     # Command line argument parser
