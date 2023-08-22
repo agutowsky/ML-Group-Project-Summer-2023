@@ -107,7 +107,7 @@ def main():
     # https://www.intel.com/content/www/us/en/developer/articles/guide/guide-to-tensorflow-runtime-optimizations-for-cpu.html
     tf.config.threading.set_inter_op_parallelism_threads(48)
     tf.config.threading.set_intra_op_parallelism_threads(48)
-    tf.config.set_soft_device_placement(enabled)
+    tf.config.set_soft_device_placement(True)
 
     # Output classes
     num_classes = 2
