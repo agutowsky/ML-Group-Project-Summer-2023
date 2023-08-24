@@ -1,0 +1,22 @@
+Classification Report:
+              precision    recall  f1-score   support
+
+         0.0       0.85      0.71      0.77    113682
+         1.0       0.75      0.87      0.81    113424
+
+    accuracy                           0.79    227106
+   macro avg       0.80      0.79      0.79    227106
+weighted avg       0.80      0.79      0.79    227106
+
+Confusion Matrix:
+[[80431 33251]
+ [14498 98926]]
+Saved confusion matrix to ./graphs/sigmoid/confusion_matrix_e25_lr0.01_m0.01_hl1_hu21_bs1.png
+Saved graph of accuracy per epoch to graphs/hypermodel/sigmoid/accuracy_e25_lr0.01_m0.01_hl1_hu21_bs1.png
+Saved graph of loss per epoch to graphs/hypermodel/sigmoid/loss_e25_lr0.01_m0.01_hl1_hu21_bs1.png
+Optimal Hyperparameters:
+- Number of hidden layers: 5
+- Number of hidden units: 71
+- Activation function: tanh
+- Learning rate: 0.001
+- Momentum: 0.9

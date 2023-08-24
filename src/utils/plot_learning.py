@@ -6,7 +6,7 @@ from sklearn.metrics import confusion_matrix
 import os
 
 
-def plot_metric(history, metric, hypermodel=False):
+def plot_metric(history, metric, hypermodel=False, activation=""):
     """
     Plot a graph of the metric vs. epochs.
 
@@ -25,7 +25,8 @@ def plot_metric(history, metric, hypermodel=False):
     hiddenlayers = config["params"]["hidden_layers"]
     hiddenunits = config["params"]["hidden_units"]
     batchsize = config["params"]["batch_size"]
-    activation = config["params"]["activation"]
+    if activation == "":
+        activation = config["params"]["activation"]
 
     # Set the title and y-axis label
     if "accuracy" in metric:
@@ -67,19 +68,20 @@ def plot_metric(history, metric, hypermodel=False):
         )
 
 
-def plot_confusion_matrix(Y_true, Y_pred_classes, num_classes):
+def plot_confusion_matrix(Y_true, Y_pred_classes, num_classes, hypermodel=False, activation=""):
     # Clear the figure
     plt.clf()
 
     # Load the config values
     config: dict = load_config(src="./config.yaml")
-    activation = config["params"]["activation"]
     epochs = config["params"]["epochs"]
     learningrate = config["params"]["learning_rate"]
     momentum = config["params"]["momentum"]
     hiddenlayers = config["params"]["hidden_layers"]
     hiddenunits = config["params"]["hidden_units"]
     batchsize = config["params"]["batch_size"]
+    if activation == "":
+        activation = config["params"]["activation"]
 
     cm = confusion_matrix(Y_true, Y_pred_classes)
     print("Confusion Matrix:")
@@ -111,7 +113,10 @@ def plot_confusion_matrix(Y_true, Y_pred_classes, num_classes):
         os.makedirs(f"graphs/{activation}")
 
     # Set the output path and include hyperparameters in the filename
-    output_path = f"./graphs/{activation}/confusion_matrix_e{epochs}_lr{learningrate}_m{momentum}_hl{hiddenlayers}_hu{hiddenunits}_bs{batchsize}.png"
+    if hypermodel:
+        if not os.path.exists(f"graphs/hypermodel/{activation}"):
+            os.makedirs(f"graphs/hypermodel/{activation}")
+        output_path = f"./graphs/hypermodel/{activation}/confusion_matrix_e{epochs}_lr{learningrate}_m{momentum}_hl{hiddenlayers}_hu{hiddenunits}_bs{batchsize}.png"
 
     # Save the plot as an image file
     plt.savefig(output_path)
