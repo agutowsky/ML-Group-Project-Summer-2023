@@ -7,6 +7,7 @@ import tensorflow as tf
 import keras_tuner as kt
 import pandas as pd
 import numpy as np
+from sklearnex import patch_sklearn
 from sklearn.discriminant_analysis import StandardScaler
 from sklearn.metrics import classification_report
 from utils.config import load_config, pretty_print_config
@@ -74,7 +75,9 @@ def model_builder(hp):
     )
 
     # Get activation from config
-    activation = hp.Choice("activation", values=["relu", "sigmoid", "tanh", "selu", "elu"])
+    activation = hp.Choice(
+        "activation", values=["relu", "sigmoid", "tanh", "selu", "elu"]
+    )
 
     # Generating the hidden layers
     for _ in range(0, hl_units, 1):
@@ -96,6 +99,10 @@ def model_builder(hp):
 
 
 def main():
+    # Use Intel extensions for scikit-learn
+    patch_sklearn()
+
+    # Output classes
     num_classes = 2
 
     # Reading in configuration options
@@ -155,7 +162,7 @@ def main():
     )
 
     # Define early stopping callback based on validation loss
-    stop_early = tf.keras.callbacks.EarlyStopping(monitor="val_loss", patience=5)
+    stop_early = tf.keras.callbacks.EarlyStopping(monitor="val_loss", patience=10)
 
     # Search for the best hyperparameters
     tuner.search(
@@ -168,7 +175,7 @@ def main():
         callbacks=[stop_early],
     )
 
-    # Get the optimal hyperparameters
+    # Get the optimal hyperparameters (keras HyperParameters obj)
     best_hps = tuner.get_best_hyperparameters(num_trials=10)[0]
 
     # Build the model with the optimal hyperparameters and train it on the data for 50 epochs
@@ -192,13 +199,17 @@ def main():
     )
 
     # Now print the accuracy and loss on the test set
-    test_loss, test_accuracy = hypermodel.evaluate(X_test_scaled, Y_test_onehot, verbose=0)
+    test_loss, test_accuracy = hypermodel.evaluate(
+        X_test_scaled, Y_test_onehot, verbose=0
+    )
     print(f"Test Loss: {test_loss:.4f}")
     print(f"Test Accuracy: {test_accuracy:.4f}")
 
     # Make predictions on the test data
     Y_pred = hypermodel.predict(X_test_scaled)
-    Y_pred_classes = np.argmax(Y_pred, axis=1)  # Convert one-hot encoded predictions to classes
+    Y_pred_classes = np.argmax(
+        Y_pred, axis=1
+    )  # Convert one-hot encoded predictions to classes
 
     # Calculate and print classification report
     class_report = classification_report(Y_test, Y_pred_classes)
@@ -207,11 +218,11 @@ def main():
 
     # Call the new function to plot the confusion matrix
     num_classes = len(np.unique(Y_test))  # Get the number of unique classes
-    plot_confusion_matrix(Y_test, Y_pred_classes, num_classes)
+    plot_confusion_matrix(Y_test, Y_pred_classes, num_classes, True, best_hps)
 
     # Generate graphs per batch size or epoch depending on the number of epochs
-    plot_metric(history, "accuracy", True)
-    plot_metric(history, "loss", True)
+    plot_metric(history, "accuracy", True, best_hps)
+    plot_metric(history, "loss", True, best_hps)
 
     # Print the optimal hyperparameters
     print("Optimal Hyperparameters:")
