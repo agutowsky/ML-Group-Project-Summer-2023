@@ -7,7 +7,6 @@ import tensorflow as tf
 import keras_tuner as kt
 import pandas as pd
 import numpy as np
-from sklearnex import patch_sklearn
 from sklearn.discriminant_analysis import StandardScaler
 from sklearn.metrics import classification_report
 from utils.config import load_config, pretty_print_config
@@ -99,9 +98,6 @@ def model_builder(hp):
 
 
 def main():
-    # Use Intel extensions for scikit-learn
-    patch_sklearn()
-
     # Output classes
     num_classes = 2
 

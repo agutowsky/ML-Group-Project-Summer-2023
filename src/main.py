@@ -4,7 +4,6 @@ CS 445/545 | Portland State University | ML Group Assignment Summer 2023
 """
 
 import argparse
-from sklearnex import patch_sklearn
 from sklearn.discriminant_analysis import StandardScaler
 from sklearn.metrics import classification_report
 import tensorflow as tf
@@ -17,9 +16,6 @@ from utils.preprocess import preprocess_csv, balance_dataset
 
 
 def main():
-    # Use Intel extensions for scikit-learn
-    patch_sklearn()
-
     # Command line argument parser
     parser = argparse.ArgumentParser()
     parser.add_argument(
