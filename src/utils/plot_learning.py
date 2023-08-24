@@ -6,7 +6,7 @@ from sklearn.metrics import confusion_matrix
 import os
 
 
-def plot_metric(history, metric, hypermodel=False, activation=""):
+def plot_metric(history, metric, hypermodel=False, hyperparams=None):
     """
     Plot a graph of the metric vs. epochs.
 
@@ -18,15 +18,26 @@ def plot_metric(history, metric, hypermodel=False, activation=""):
     plt.clf()
 
     # Load the config values
-    config: dict = load_config(src="./config.yaml")
-    epochs = config["params"]["epochs"]
-    learningrate = config["params"]["learning_rate"]
-    momentum = config["params"]["momentum"]
-    hiddenlayers = config["params"]["hidden_layers"]
-    hiddenunits = config["params"]["hidden_units"]
-    batchsize = config["params"]["batch_size"]
-    if activation == "":
+    if hyperparams == None:
+        config: dict = load_config(src="./config.yaml")
+        epochs = config["params"]["epochs"]
+        learningrate = config["params"]["learning_rate"]
+        momentum = config["params"]["momentum"]
+        hiddenlayers = config["params"]["hidden_layers"]
+        hiddenunits = config["params"]["hidden_units"]
+        batchsize = config["params"]["batch_size"]
         activation = config["params"]["activation"]
+    else:
+        # Hyperparam tuning model values
+        # epochs = hyperparams.get('epochs')
+        epochs = 50
+        learningrate = hyperparams.get('learning_rate')
+        momentum = hyperparams.get('momentum')
+        hiddenlayers = hyperparams.get('hidden_layers')
+        hiddenunits = hyperparams.get('hidden_units')
+        # batchsize = hyperparams.get('batch_size')
+        batchsize = 1
+        activation = hyperparams.get('activation')
 
     # Set the title and y-axis label
     if "accuracy" in metric:
@@ -68,20 +79,31 @@ def plot_metric(history, metric, hypermodel=False, activation=""):
         )
 
 
-def plot_confusion_matrix(Y_true, Y_pred_classes, num_classes, hypermodel=False, activation=""):
+def plot_confusion_matrix(Y_true, Y_pred_classes, num_classes, hypermodel=False, hyperparams=None):
     # Clear the figure
     plt.clf()
 
     # Load the config values
-    config: dict = load_config(src="./config.yaml")
-    epochs = config["params"]["epochs"]
-    learningrate = config["params"]["learning_rate"]
-    momentum = config["params"]["momentum"]
-    hiddenlayers = config["params"]["hidden_layers"]
-    hiddenunits = config["params"]["hidden_units"]
-    batchsize = config["params"]["batch_size"]
-    if activation == "":
+    if hyperparams == None:
+        config: dict = load_config(src="./config.yaml")
+        epochs = config["params"]["epochs"]
+        learningrate = config["params"]["learning_rate"]
+        momentum = config["params"]["momentum"]
+        hiddenlayers = config["params"]["hidden_layers"]
+        hiddenunits = config["params"]["hidden_units"]
+        batchsize = config["params"]["batch_size"]
         activation = config["params"]["activation"]
+    else:
+        # Hyperparam tuning model values
+        # epochs = hyperparams.get('epochs')
+        epochs = 50
+        learningrate = hyperparams.get('learning_rate')
+        momentum = hyperparams.get('momentum')
+        hiddenlayers = hyperparams.get('hidden_layers')
+        hiddenunits = hyperparams.get('hidden_units')
+        # batchsize = hyperparams.get('batch_size')
+        batchsize = 1
+        activation = hyperparams.get('activation')
 
     cm = confusion_matrix(Y_true, Y_pred_classes)
     print("Confusion Matrix:")

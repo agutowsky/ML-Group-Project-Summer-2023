@@ -175,7 +175,7 @@ def main():
         callbacks=[stop_early],
     )
 
-    # Get the optimal hyperparameters
+    # Get the optimal hyperparameters (keras HyperParameters obj)
     best_hps = tuner.get_best_hyperparameters(num_trials=25)[0]
 
     # Build the model with the optimal hyperparameters and train it on the data for 50 epochs
